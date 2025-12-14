@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Cleaning Management</title>
+  <title>Reports Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
@@ -13,8 +13,8 @@
       --border: #d1d5db;
       --text: #111827;
       --muted: #6b7280;
-      --radius: 16px;
-      --shadow: 0 10px 30px rgba(0,0,0,.08);
+      --radius: 18px;
+      --shadow: 0 12px 32px rgba(0,0,0,.08);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
                    Roboto, Helvetica, Arial, sans-serif;
     }
@@ -27,6 +27,7 @@
       color: var(--text);
     }
 
+    /* -------- login -------- */
     .center {
       min-height: 100vh;
       display: flex;
@@ -40,11 +41,14 @@
       box-shadow: var(--shadow);
       padding: 32px;
       width: 100%;
+    }
+
+    .login-card {
       max-width: 420px;
     }
 
     h1, h2 {
-      margin: 0 0 8px;
+      margin: 0 0 10px;
     }
 
     p {
@@ -54,14 +58,28 @@
 
     input, select, textarea {
       width: 100%;
-      padding: 14px;
+      padding: 14px 16px;
       margin-bottom: 16px;
-      border-radius: 12px;
+      border-radius: 14px;
       border: 1px solid var(--border);
       font-size: 15px;
     }
 
-    textarea { resize: vertical; min-height: 80px; }
+    input[type="file"] {
+      padding: 10px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    label {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      display: block;
+    }
 
     button {
       width: 100%;
@@ -69,20 +87,22 @@
       background: var(--blue);
       color: white;
       border: none;
-      border-radius: 14px;
+      border-radius: 16px;
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
     }
 
-    button:hover { opacity: .95; }
+    button:hover {
+      opacity: .95;
+    }
 
-    /* app layout */
+    /* -------- app -------- */
     .app {
-      padding: 40px;
+      display: none;
       max-width: 1200px;
       margin: auto;
-      display: none;
+      padding: 40px 24px 60px;
     }
 
     .header {
@@ -96,15 +116,19 @@
       gap: 32px;
     }
 
-    .hidden { display: none; }
+    @media (max-width: 600px) {
+      .app {
+        padding: 24px 16px 40px;
+      }
+    }
   </style>
 </head>
 
 <body>
 
-<!-- PASSWORD SCREEN -->
+<!-- 🔐 PASSWORD -->
 <div id="login" class="center">
-  <div class="card">
+  <div class="card login-card">
     <h2>Enter Password</h2>
     <p>Please enter the password to continue</p>
     <input type="password" id="password" placeholder="Password" />
@@ -112,44 +136,52 @@
   </div>
 </div>
 
-<!-- APP -->
+<!-- 📋 APP -->
 <div id="app" class="app">
   <div class="header">
-    <h1>Cleaning Management</h1>
-    <p>Submit cleaning requests and manager reports</p>
+    <h1>Reports Dashboard</h1>
+    <p>Repair & Cleaning reports</p>
   </div>
 
   <div class="grid">
-    <!-- Cleaning Request -->
-    <div class="card">
-      <h2>Cleaning Request</h2>
 
-      <input id="apt" placeholder="Apartment Name (e.g. Suite 204)" />
-      <input id="date" type="date" />
-      <select id="type">
-        <option value="">Select type</option>
-        <option>Light</option>
-        <option>Standard</option>
-        <option>Deep</option>
-      </select>
+    <!-- 🛠️ REPAIR REPORT -->
+    <div class="card">
+      <h2>Repair Report</h2>
+
+      <input id="repair-apt" placeholder="Apartment (e.g. 204)" />
+      <input id="repair-date" type="date" />
+
+      <label>Photos</label>
+      <input id="repair-photos" type="file" accept="image/*" multiple />
+
+      <label>Videos</label>
+      <input id="repair-videos" type="file" accept="video/*" multiple />
+
+      <button onclick="submitRepair()">Submit</button>
+    </div>
+
+    <!-- 🧹 CLEANING REPORT -->
+    <div class="card">
+      <h2>Cleaning Report</h2>
+
+      <input id="clean-apt" placeholder="Apartment (e.g. 204)" />
+      <input id="clean-date" type="date" />
+
+      <label>Photos</label>
+      <input id="clean-photos" type="file" accept="image/*" multiple />
+
+      <label>Videos</label>
+      <input id="clean-videos" type="file" accept="video/*" multiple />
 
       <button onclick="submitCleaning()">Submit</button>
     </div>
 
-    <!-- Manager Report -->
-    <div class="card">
-      <h2>Manager Report</h2>
-
-      <input id="manager" placeholder="Manager Name" />
-      <input id="amount" type="number" step="0.01" placeholder="0.00" />
-      <textarea id="comment" placeholder="Enter your comment"></textarea>
-
-      <button onclick="submitReport()">Submit</button>
-    </div>
   </div>
 </div>
 
 <script>
+  /* 🔐 PASSWORD */
   const SITE_PASSWORD = "demo123";
 
   function login() {
@@ -162,24 +194,41 @@
     }
   }
 
-  function submitCleaning() {
-    const data = {
-      apartment: apt.value,
-      date: date.value,
-      type: type.value
-    };
-    console.log("Cleaning Request:", data);
-    alert("Cleaning request submitted");
+  /* 📎 FILES INFO (for now) */
+  function filesInfo(files) {
+    return Array.from(files).map(f => ({
+      name: f.name,
+      size: f.size,
+      type: f.type
+    }));
   }
 
-  function submitReport() {
+  /* 🛠️ REPAIR */
+  function submitRepair() {
     const data = {
-      manager: manager.value,
-      amount: amount.value,
-      comment: comment.value
+      report: "repair",
+      apartment: document.getElementById("repair-apt").value,
+      date: document.getElementById("repair-date").value,
+      photos: filesInfo(document.getElementById("repair-photos").files),
+      videos: filesInfo(document.getElementById("repair-videos").files)
     };
-    console.log("Manager Report:", data);
-    alert("Report submitted");
+
+    console.log("Repair report:", data);
+    alert("Repair report submitted");
+  }
+
+  /* 🧹 CLEANING */
+  function submitCleaning() {
+    const data = {
+      report: "cleaning",
+      apartment: document.getElementById("clean-apt").value,
+      date: document.getElementById("clean-date").value,
+      photos: filesInfo(document.getElementById("clean-photos").files),
+      videos: filesInfo(document.getElementById("clean-videos").files)
+    };
+
+    console.log("Cleaning report:", data);
+    alert("Cleaning report submitted");
   }
 </script>
 
