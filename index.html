@@ -22,7 +22,7 @@ body{margin:0;background:var(--bg);color:var(--text)}
 .center{min-height:100vh;display:flex;align-items:center;justify-content:center}
 .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:32px;width:100%}
 .login-card{max-width:420px}
-input{width:100%;padding:14px 16px;margin-bottom:16px;border-radius:14px;border:1px solid var(--border);font-size:15px}
+input,textarea{width:100%;padding:14px 16px;margin-bottom:16px;border-radius:14px;border:1px solid var(--border);font-size:15px}
 input[type=file]{padding:10px}
 label{font-size:14px;color:var(--muted);display:block;margin-bottom:6px}
 button{width:100%;padding:14px;background:var(--blue);color:#fff;border:none;border-radius:16px;font-size:16px;font-weight:600;cursor:pointer}
@@ -63,19 +63,18 @@ button:hover{opacity:.95}
         action="https://vm62681.vpsone.xyz/webhook/remont"
         method="POST"
         enctype="multipart/form-data"
-        target="hiddenFrame"
-        onsubmit="sent('repair')"
+        onsubmit="beforeSend()"
       >
         <input type="hidden" name="тип" value="ремонт">
-        <input type="hidden" name="timestamp" class="ts">
+        <input type="hidden" name="timestamp" id="ts1">
 
         <input name="апартамент" placeholder="Апартамент (например, 204)" required>
 
         <label>Фото</label>
-        <input type="file" name="photos" accept="image/*" multiple>
+        <input type="file" name="photo" accept="image/*">
 
         <label>Видео</label>
-        <input type="file" name="videos" accept="video/*" multiple>
+        <input type="file" name="video" accept="video/*">
 
         <button type="submit">Отправить</button>
       </form>
@@ -89,19 +88,18 @@ button:hover{opacity:.95}
         action="https://vm62681.vpsone.xyz/webhook/klining"
         method="POST"
         enctype="multipart/form-data"
-        target="hiddenFrame"
-        onsubmit="sent('clean')"
+        onsubmit="beforeSend()"
       >
         <input type="hidden" name="тип" value="клининг">
-        <input type="hidden" name="timestamp" class="ts">
+        <input type="hidden" name="timestamp" id="ts2">
 
         <input name="апартамент" placeholder="Апартамент (например, 204)" required>
 
         <label>Фото</label>
-        <input type="file" name="photos" accept="image/*" multiple>
+        <input type="file" name="photo" accept="image/*">
 
         <label>Видео</label>
-        <input type="file" name="videos" accept="video/*" multiple>
+        <input type="file" name="video" accept="video/*">
 
         <button type="submit">Отправить</button>
       </form>
@@ -110,31 +108,24 @@ button:hover{opacity:.95}
   </div>
 </div>
 
-<iframe name="hiddenFrame" style="display:none"></iframe>
-
 <script>
 const SITE_PASSWORD = "demo123";
 
 function login(){
-  if(document.getElementById("password").value===SITE_PASSWORD){
-    document.getElementById("login").style.display="none";
-    document.getElementById("app").style.display="block";
-  } else alert("Неверный пароль");
+  if(document.getElementById("password").value === SITE_PASSWORD){
+    document.getElementById("login").style.display = "none";
+    document.getElementById("app").style.display = "block";
+  } else {
+    alert("Неверный пароль");
+  }
 }
 
-function sent(type){
-  document.querySelectorAll(".ts").forEach(i=>{
-    i.value=new Date().toISOString();
-  });
-  setTimeout(()=>{
-    alert(type==="repair"
-      ? "✅ Отчёт по ремонту отправлен"
-      : "✅ Отчёт по клинингу отправлен"
-    );
-  },300);
+function beforeSend(){
+  const ts = new Date().toISOString();
+  document.getElementById("ts1").value = ts;
+  document.getElementById("ts2").value = ts;
 }
 </script>
 
 </body>
 </html>
-
