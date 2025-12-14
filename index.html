@@ -63,6 +63,7 @@ button:hover{opacity:.95}
         action="https://vm62681.vpsone.xyz/webhook-test/remont"
         method="POST"
         enctype="multipart/form-data"
+        target="hiddenFrame"
         onsubmit="beforeSend('repair')"
       >
         <input type="hidden" name="тип" value="ремонт">
@@ -88,6 +89,7 @@ button:hover{opacity:.95}
         action="https://vm62681.vpsone.xyz/webhook-test/klining"
         method="POST"
         enctype="multipart/form-data"
+        target="hiddenFrame"
         onsubmit="beforeSend('clean')"
       >
         <input type="hidden" name="тип" value="клининг">
@@ -107,6 +109,9 @@ button:hover{opacity:.95}
 
   </div>
 </div>
+
+<!-- 👇 СКРЫТЫЙ iframe — КЛЮЧ -->
+<iframe name="hiddenFrame" style="display:none"></iframe>
 
 <script>
 const SITE_PASSWORD = "demo123";
