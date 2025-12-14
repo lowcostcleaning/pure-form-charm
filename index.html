@@ -179,8 +179,10 @@
 </div>
 
 <script>
-  /* 🔐 ПАРОЛЬ */
   const SITE_PASSWORD = "demo123";
+
+  const REPAIR_WEBHOOK =
+    "https://vm62681.vpsone.xyz/webhook/a8f1756b-b8eb-426d-b24c-aa0705fa6f65";
 
   function login() {
     const value = document.getElementById("password").value;
@@ -192,40 +194,48 @@
     }
   }
 
-  function filesInfo(files) {
-    return Array.from(files).map(f => ({
-      name: f.name,
-      size: f.size,
-      type: f.type
-    }));
-  }
+  async function submitRepair() {
+    const apartment = document.getElementById("repair-apt").value;
+    const photos = document.getElementById("repair-photos").files;
+    const videos = document.getElementById("repair-videos").files;
 
-  /* 🛠 РЕМОНТ */
-  function submitRepair() {
-    const data = {
-      тип_отчёта: "ремонт",
-      апартамент: document.getElementById("repair-apt").value,
-      фото: filesInfo(document.getElementById("repair-photos").files),
-      видео: filesInfo(document.getElementById("repair-videos").files)
-    };
+    if (!apartment) {
+      alert("Укажите апартамент");
+      return;
+    }
 
-    console.log("Отчёт ремонт:", data);
-    alert("Отчёт по ремонту отправлен");
-  }
+    const formData = new FormData();
+    formData.append("тип_отчёта", "ремонт");
+    formData.append("апартамент", apartment);
+    formData.append("timestamp", new Date().toISOString());
 
-  /* 🧹 КЛИНИНГ */
-  function submitCleaning() {
-    const data = {
-      тип_отчёта: "клининг",
-      апартамент: document.getElementById("clean-apt").value,
-      фото: filesInfo(document.getElementById("clean-photos").files),
-      видео: filesInfo(document.getElementById("clean-videos").files)
-    };
+    for (const file of photos) {
+      formData.append("photos", file);
+    }
 
-    console.log("Отчёт клининг:", data);
-    alert("Отчёт по клинингу отправлен");
+    for (const file of videos) {
+      formData.append("videos", file);
+    }
+
+    try {
+      const res = await fetch(REPAIR_WEBHOOK, {
+        method: "POST",
+        body: formData
+      });
+
+      if (!res.ok) throw new Error("Webhook error");
+
+      alert("Отчёт по ремонту отправлен");
+      document.getElementById("repair-apt").value = "";
+      document.getElementById("repair-photos").value = "";
+      document.getElementById("repair-videos").value = "";
+    } catch (err) {
+      console.error(err);
+      alert("Ошибка отправки отчёта");
+    }
   }
 </script>
+
 
 </body>
 </html>
