@@ -51,13 +51,19 @@ async function submitForm(form, formName) {
     existingStatus.remove();
   }
   
-  // If webhook URL is empty, show a message
+  // If webhook URL is empty, log to console
   if (!WEBHOOK_URL) {
+    console.log(`[${formName}] Form submitted:`, data);
+    
     const statusDiv = document.createElement('div');
-    statusDiv.className = 'form-error';
-    statusDiv.textContent = 'Webhook URL not configured. Data: ' + JSON.stringify(data);
+    statusDiv.className = 'form-success';
+    statusDiv.textContent = 'Submitted! (logged to console)';
     form.appendChild(statusDiv);
-    console.log('Form data (no webhook configured):', data);
+    form.reset();
+    
+    setTimeout(() => {
+      statusDiv.remove();
+    }, 3000);
     return;
   }
   
@@ -80,7 +86,7 @@ async function submitForm(form, formName) {
     
     if (response.ok) {
       statusDiv.className = 'form-success';
-      statusDiv.textContent = 'Form submitted successfully!';
+      statusDiv.textContent = 'Submitted successfully!';
       form.reset();
     } else {
       statusDiv.className = 'form-error';
@@ -89,7 +95,6 @@ async function submitForm(form, formName) {
     
     form.appendChild(statusDiv);
     
-    // Remove status message after 5 seconds
     setTimeout(() => {
       statusDiv.remove();
     }, 5000);
@@ -109,10 +114,10 @@ async function submitForm(form, formName) {
 // Form Event Listeners
 formOne.addEventListener('submit', (e) => {
   e.preventDefault();
-  submitForm(formOne, 'Form One');
+  submitForm(formOne, 'Cleaning Request');
 });
 
 formTwo.addEventListener('submit', (e) => {
   e.preventDefault();
-  submitForm(formTwo, 'Form Two');
+  submitForm(formTwo, 'Manager Report');
 });
