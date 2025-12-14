@@ -60,10 +60,10 @@ button:hover{opacity:.95}
       <h2>Отчёт по ремонту</h2>
 
       <form
-        action="https://vm62681.vpsone.xyz/webhook/remont"
+        action="https://vm62681.vpsone.xyz/webhook-test/remont"
         method="POST"
         enctype="multipart/form-data"
-        onsubmit="beforeSend()"
+        onsubmit="beforeSend('repair')"
       >
         <input type="hidden" name="тип" value="ремонт">
         <input type="hidden" name="timestamp" id="ts1">
@@ -85,10 +85,10 @@ button:hover{opacity:.95}
       <h2>Отчёт по клинингу</h2>
 
       <form
-        action="https://vm62681.vpsone.xyz/webhook/klining"
+        action="https://vm62681.vpsone.xyz/webhook-test/klining"
         method="POST"
         enctype="multipart/form-data"
-        onsubmit="beforeSend()"
+        onsubmit="beforeSend('clean')"
       >
         <input type="hidden" name="тип" value="клининг">
         <input type="hidden" name="timestamp" id="ts2">
@@ -120,10 +120,18 @@ function login(){
   }
 }
 
-function beforeSend(){
+function beforeSend(type){
   const ts = new Date().toISOString();
   document.getElementById("ts1").value = ts;
   document.getElementById("ts2").value = ts;
+
+  setTimeout(() => {
+    alert(
+      type === "repair"
+        ? "✅ Отчёт по ремонту отправлен"
+        : "✅ Отчёт по клинингу отправлен"
+    );
+  }, 300);
 }
 </script>
 
