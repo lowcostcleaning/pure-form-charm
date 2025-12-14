@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Reports Dashboard</title>
+  <title>Отчёты</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
@@ -27,7 +27,7 @@
       color: var(--text);
     }
 
-    /* -------- login -------- */
+    /* ---------- ВХОД ---------- */
     .center {
       min-height: 100vh;
       display: flex;
@@ -56,7 +56,7 @@
       color: var(--muted);
     }
 
-    input, select, textarea {
+    input, textarea {
       width: 100%;
       padding: 14px 16px;
       margin-bottom: 16px;
@@ -97,7 +97,7 @@
       opacity: .95;
     }
 
-    /* -------- app -------- */
+    /* ---------- ПРИЛОЖЕНИЕ ---------- */
     .app {
       display: none;
       max-width: 1200px;
@@ -126,62 +126,60 @@
 
 <body>
 
-<!-- 🔐 PASSWORD -->
+<!-- 🔐 ВХОД ПО ПАРОЛЮ -->
 <div id="login" class="center">
   <div class="card login-card">
-    <h2>Enter Password</h2>
-    <p>Please enter the password to continue</p>
-    <input type="password" id="password" placeholder="Password" />
-    <button onclick="login()">Continue</button>
+    <h2>Введите пароль</h2>
+    <p>Для продолжения введите пароль</p>
+    <input type="password" id="password" placeholder="Пароль" />
+    <button onclick="login()">Войти</button>
   </div>
 </div>
 
-<!-- 📋 APP -->
+<!-- 📋 ПАНЕЛЬ ОТЧЁТОВ -->
 <div id="app" class="app">
   <div class="header">
-    <h1>Reports Dashboard</h1>
-    <p>Repair & Cleaning reports</p>
+    <h1>Панель отчётов</h1>
+    <p>Отчёты по ремонту и клинингу</p>
   </div>
 
   <div class="grid">
 
-    <!-- 🛠️ REPAIR REPORT -->
+    <!-- 🛠 ОТЧЁТ РЕМОНТ -->
     <div class="card">
-      <h2>Repair Report</h2>
+      <h2>Отчёт по ремонту</h2>
 
-      <input id="repair-apt" placeholder="Apartment (e.g. 204)" />
-      <input id="repair-date" type="date" />
+      <input id="repair-apt" placeholder="Апартамент (например, 204)" />
 
-      <label>Photos</label>
+      <label>Фото</label>
       <input id="repair-photos" type="file" accept="image/*" multiple />
 
-      <label>Videos</label>
+      <label>Видео</label>
       <input id="repair-videos" type="file" accept="video/*" multiple />
 
-      <button onclick="submitRepair()">Submit</button>
+      <button onclick="submitRepair()">Отправить</button>
     </div>
 
-    <!-- 🧹 CLEANING REPORT -->
+    <!-- 🧹 ОТЧЁТ КЛИНИНГ -->
     <div class="card">
-      <h2>Cleaning Report</h2>
+      <h2>Отчёт по клинингу</h2>
 
-      <input id="clean-apt" placeholder="Apartment (e.g. 204)" />
-      <input id="clean-date" type="date" />
+      <input id="clean-apt" placeholder="Апартамент (например, 204)" />
 
-      <label>Photos</label>
+      <label>Фото</label>
       <input id="clean-photos" type="file" accept="image/*" multiple />
 
-      <label>Videos</label>
+      <label>Видео</label>
       <input id="clean-videos" type="file" accept="video/*" multiple />
 
-      <button onclick="submitCleaning()">Submit</button>
+      <button onclick="submitCleaning()">Отправить</button>
     </div>
 
   </div>
 </div>
 
 <script>
-  /* 🔐 PASSWORD */
+  /* 🔐 ПАРОЛЬ */
   const SITE_PASSWORD = "demo123";
 
   function login() {
@@ -190,11 +188,10 @@
       document.getElementById("login").style.display = "none";
       document.getElementById("app").style.display = "block";
     } else {
-      alert("Wrong password");
+      alert("Неверный пароль");
     }
   }
 
-  /* 📎 FILES INFO (for now) */
   function filesInfo(files) {
     return Array.from(files).map(f => ({
       name: f.name,
@@ -203,32 +200,30 @@
     }));
   }
 
-  /* 🛠️ REPAIR */
+  /* 🛠 РЕМОНТ */
   function submitRepair() {
     const data = {
-      report: "repair",
-      apartment: document.getElementById("repair-apt").value,
-      date: document.getElementById("repair-date").value,
-      photos: filesInfo(document.getElementById("repair-photos").files),
-      videos: filesInfo(document.getElementById("repair-videos").files)
+      тип_отчёта: "ремонт",
+      апартамент: document.getElementById("repair-apt").value,
+      фото: filesInfo(document.getElementById("repair-photos").files),
+      видео: filesInfo(document.getElementById("repair-videos").files)
     };
 
-    console.log("Repair report:", data);
-    alert("Repair report submitted");
+    console.log("Отчёт ремонт:", data);
+    alert("Отчёт по ремонту отправлен");
   }
 
-  /* 🧹 CLEANING */
+  /* 🧹 КЛИНИНГ */
   function submitCleaning() {
     const data = {
-      report: "cleaning",
-      apartment: document.getElementById("clean-apt").value,
-      date: document.getElementById("clean-date").value,
-      photos: filesInfo(document.getElementById("clean-photos").files),
-      videos: filesInfo(document.getElementById("clean-videos").files)
+      тип_отчёта: "клининг",
+      апартамент: document.getElementById("clean-apt").value,
+      фото: filesInfo(document.getElementById("clean-photos").files),
+      видео: filesInfo(document.getElementById("clean-videos").files)
     };
 
-    console.log("Cleaning report:", data);
-    alert("Cleaning report submitted");
+    console.log("Отчёт клининг:", data);
+    alert("Отчёт по клинингу отправлен");
   }
 </script>
 
