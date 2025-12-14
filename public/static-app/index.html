@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Simple form submission page with password protection">
+  <title>Form Submission</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Password Gate -->
+  <div id="password-gate" class="password-overlay">
+    <div class="password-card">
+      <h1>Enter Password</h1>
+      <p>Please enter the password to continue</p>
+      <input type="password" id="password-input" placeholder="Password" autofocus>
+      <button id="password-submit" class="btn-primary">Continue</button>
+      <p id="password-error" class="error-text"></p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main id="main-content" class="main-content hidden">
+    <header class="header">
+      <h1>Form Submission</h1>
+      <p>Complete the forms below to submit your information</p>
+    </header>
+
+    <div class="cards-container">
+      <!-- Form 1 -->
+      <section class="card">
+        <h2>Form One</h2>
+        <form id="form-one">
+          <div class="form-group">
+            <label for="f1-text">Text Input</label>
+            <input type="text" id="f1-text" name="text" placeholder="Enter text" required>
+          </div>
+          <div class="form-group">
+            <label for="f1-date">Date</label>
+            <input type="date" id="f1-date" name="date" required>
+          </div>
+          <div class="form-group">
+            <label for="f1-select">Select Option</label>
+            <select id="f1-select" name="option" required>
+              <option value="">Choose an option</option>
+              <option value="option1">Option 1</option>
+              <option value="option2">Option 2</option>
+              <option value="option3">Option 3</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-primary">Submit Form One</button>
+        </form>
+      </section>
+
+      <!-- Form 2 -->
+      <section class="card">
+        <h2>Form Two</h2>
+        <form id="form-two">
+          <div class="form-group">
+            <label for="f2-text">Text Input</label>
+            <input type="text" id="f2-text" name="text" placeholder="Enter text" required>
+          </div>
+          <div class="form-group">
+            <label for="f2-number">Number</label>
+            <input type="number" id="f2-number" name="number" placeholder="Enter number" required>
+          </div>
+          <div class="form-group">
+            <label for="f2-textarea">Message</label>
+            <textarea id="f2-textarea" name="message" placeholder="Enter your message" rows="4" required></textarea>
+          </div>
+          <button type="submit" class="btn-primary">Submit Form Two</button>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
