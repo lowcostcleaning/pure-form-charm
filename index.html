@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Отчёты</title>
+  <title>Панель отчётов</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
@@ -27,7 +27,6 @@
       color: var(--text);
     }
 
-    /* ---------- ВХОД ---------- */
     .center {
       min-height: 100vh;
       display: flex;
@@ -56,7 +55,7 @@
       color: var(--muted);
     }
 
-    input, textarea {
+    input {
       width: 100%;
       padding: 14px 16px;
       margin-bottom: 16px;
@@ -67,11 +66,6 @@
 
     input[type="file"] {
       padding: 10px;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 90px;
     }
 
     label {
@@ -93,11 +87,6 @@
       cursor: pointer;
     }
 
-    button:hover {
-      opacity: .95;
-    }
-
-    /* ---------- ПРИЛОЖЕНИЕ ---------- */
     .app {
       display: none;
       max-width: 1200px;
@@ -115,37 +104,31 @@
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 32px;
     }
-
-    @media (max-width: 600px) {
-      .app {
-        padding: 24px 16px 40px;
-      }
-    }
   </style>
 </head>
 
 <body>
 
-<!-- 🔐 ВХОД ПО ПАРОЛЮ -->
+<!-- 🔐 ВХОД -->
 <div id="login" class="center">
   <div class="card login-card">
     <h2>Введите пароль</h2>
-    <p>Для продолжения введите пароль</p>
+    <p>Для доступа к отчётам</p>
     <input type="password" id="password" placeholder="Пароль" />
     <button onclick="login()">Войти</button>
   </div>
 </div>
 
-<!-- 📋 ПАНЕЛЬ ОТЧЁТОВ -->
+<!-- 📋 ПАНЕЛЬ -->
 <div id="app" class="app">
   <div class="header">
     <h1>Панель отчётов</h1>
-    <p>Отчёты по ремонту и клинингу</p>
+    <p>Ремонт и клининг</p>
   </div>
 
   <div class="grid">
 
-    <!-- 🛠 ОТЧЁТ РЕМОНТ -->
+    <!-- 🛠 РЕМОНТ -->
     <div class="card">
       <h2>Отчёт по ремонту</h2>
 
@@ -157,10 +140,10 @@
       <label>Видео</label>
       <input id="repair-videos" type="file" accept="video/*" multiple />
 
-      <button onclick="submitRepair()">Отправить</button>
+      <button onclick="submitForm('ремонт')">Отправить</button>
     </div>
 
-    <!-- 🧹 ОТЧЁТ КЛИНИНГ -->
+    <!-- 🧹 КЛИНИНГ -->
     <div class="card">
       <h2>Отчёт по клинингу</h2>
 
@@ -172,7 +155,7 @@
       <label>Видео</label>
       <input id="clean-videos" type="file" accept="video/*" multiple />
 
-      <button onclick="submitCleaning()">Отправить</button>
+      <button onclick="submitForm('клининг')">Отправить</button>
     </div>
 
   </div>
@@ -181,8 +164,9 @@
 <script>
   const SITE_PASSWORD = "demo123";
 
-  const REPAIR_WEBHOOK =
-    "https://vm62681.vpsone.xyz/webhook-test/a8f1756b-b8eb-426d-b24c-aa0705fa6f65";
+  // 🔴 ВСТАВЬ СЮДА PRODUCTION WEBHOOK
+  const WEBHOOK_URL =
+    "https://vm62681.vpsone.xyz/webhook/PASTE_YOUR_PRODUCTION_ID";
 
   function login() {
     const value = document.getElementById("password").value;
@@ -194,48 +178,57 @@
     }
   }
 
-  async function submitRepair() {
-    const apartment = document.getElementById("repair-apt").value;
-    const photos = document.getElementById("repair-photos").files;
-    const videos = document.getElementById("repair-videos").files;
+  async function submitForm(type) {
+    const apt =
+      type === "ремонт"
+        ? document.getElementById("repair-apt").value
+        : document.getElementById("clean-apt").value;
 
-    if (!apartment) {
+    const photos =
+      type === "ремонт"
+        ? document.getElementById("repair-photos").files
+        : document.getElementById("clean-photos").files;
+
+    const videos =
+      type === "ремонт"
+        ? document.getElementById("repair-videos").files
+        : document.getElementById("clean-videos").files;
+
+    if (!apt) {
       alert("Укажите апартамент");
       return;
     }
 
     const formData = new FormData();
-    formData.append("тип_отчёта", "ремонт");
-    formData.append("апартамент", apartment);
+    formData.append("тип_отчёта", type);
+    formData.append("апартамент", apt);
     formData.append("timestamp", new Date().toISOString());
 
-    for (const file of photos) {
-      formData.append("photos", file);
-    }
-
-    for (const file of videos) {
-      formData.append("videos", file);
-    }
+    for (const f of photos) formData.append("photos", f);
+    for (const f of videos) formData.append("videos", f);
 
     try {
-      const res = await fetch(REPAIR_WEBHOOK, {
+      const res = await fetch(WEBHOOK_URL, {
         method: "POST",
         body: formData
       });
 
-      if (!res.ok) throw new Error("Webhook error");
+      const text = await res.text();
+      console.log("STATUS:", res.status, "RESPONSE:", text);
 
-      alert("Отчёт по ремонту отправлен");
-      document.getElementById("repair-apt").value = "";
-      document.getElementById("repair-photos").value = "";
-      document.getElementById("repair-videos").value = "";
-    } catch (err) {
-      console.error(err);
-      alert("Ошибка отправки отчёта");
+      if (res.status !== 200) {
+        alert("Ошибка сервера");
+        return;
+      }
+
+      alert("Отчёт успешно отправлен");
+
+    } catch (e) {
+      console.error(e);
+      alert("Ошибка соединения");
     }
   }
 </script>
-
 
 </body>
 </html>
